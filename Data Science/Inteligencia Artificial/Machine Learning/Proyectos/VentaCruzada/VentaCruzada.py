@@ -21,7 +21,7 @@ df_VC_tmp =pd.read_csv(inpath + 'Base_VentaCruzada_CSV.csv', delimiter=';', deci
 #df_VC_tmp = df_VC_tmp['Total_Facturada'].astype(str).astype(float)
 df_VC_tmp.columns =[ 'Key','IdCliente','IdProducto','Producto','Fecha','Cantidad','Total']
 df_VC_tmp["Key"] = pd.to_datetime(df_VC_tmp['Fecha']).astype(str)+ "|" + df_VC_tmp["IdCliente"].astype(str)
-
+dfFlagged = df.loc[df.isFlaggedFraud == 1]
 #################
 ## Descriptivos
 print(df_VC_tmp.sample(5))
