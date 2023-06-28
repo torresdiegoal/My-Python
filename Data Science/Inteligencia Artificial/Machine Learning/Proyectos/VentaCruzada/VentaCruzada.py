@@ -1,41 +1,48 @@
 
 
 import os.path
-from mlxtend.preprocessing import TransactionEncoder 
+from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 import pandas as pd
 import numpy as np
 import warnings
 
-warnings.filterwarnings("ignore", category = UserWarning) #ignora los warnings
+warnings.filterwarnings("ignore", category=UserWarning)  # ignora los warnings
 
-#File = "C:/Users/Diego Torres/OneDrive - Manar Technologies SAS/Petcol/BD/DataINVentaCruzada.csv"
+# File = "C:/Users/Diego Torres/OneDrive - Manar Technologies SAS/Petcol/BD/DataINVentaCruzada.csv"
 inpath = "C:/Users/Diego Torres/OneDrive - Manar Technologies SAS/Documentos compartidos/01_Proyectos/02_Externos/Carvajal/01_ProyectoRFM-Ventacruzada/4. Realización/Insumos/"
 outpath = "C:/Users/Diego Torres/OneDrive - Manar Technologies SAS/Documentos compartidos/01_Proyectos/02_Externos/Carvajal/01_ProyectoRFM-Ventacruzada/4. Realización/Venta_Cruzada/"
 
-df_VC_tmp =pd.read_csv(inpath + 'Base_VentaCruzada_CSV.csv', delimiter=';', decimal=",",
-                      #usecols=['%Cliente','Fecha', 'Producto'], 
-                      dtype={'%Cliente': int, 'Fecha':'string','Producto':'string'}
-                      )
-#df_VC_tmp = df_VC_tmp['Total_Facturada'].astype(str).astype(float)
-df_VC_tmp.columns =[ 'Key','IdCliente','IdProducto','Producto','Fecha','Cantidad','Total']
-df_VC_tmp["Key"] = pd.to_datetime(df_VC_tmp['Fecha']).astype(str)+ "|" + df_VC_tmp["IdCliente"].astype(str)
-dfFlagged = df.loc[df.isFlaggedFraud == 1]
+df_VC_tmp = pd.read_csv(inpath + 'Base_VentaCruzada_CSV.csv', delimiter=';', decimal=",",
+                        # usecols=['%Cliente','Fecha', 'Producto'],
+                        dtype={'%Cliente': int, 'Fecha': 'string',
+                               'Producto': 'string'}
+                        )
+# df_VC_tmp = df_VC_tmp['Total_Facturada'].astype(str).astype(float)
+df_VC_tmp.columns = ['Key', 'IdCliente', 'IdProducto',
+                     'Producto', 'Fecha', 'Cantidad', 'Total']
+df_VC_tmp["Key"] = pd.to_datetime(
+    df_VC_tmp['Fecha'], format="%d/%m/%Y").astype(str) + "|" + df_VC_tmp["IdCliente"].astype(str)
+
 #################
-## Descriptivos
+# Descriptivos
 print(df_VC_tmp.sample(5))
 print(' ')
+print('Summary:')
 df_VC_tmp.info()
 print(' ')
+print('Descriptivos:')
 print(df_VC_tmp.describe().round(2).transpose())
 print(' ')
+print('Nulos por campo:')
 print(df_VC_tmp.isnull().sum())  # total de nulls por variable
 print(' ')
-print('Filas & Columnas: ', df_VC_tmp.shape)
+print('Dimensiones:')
+print(df_VC_tmp.shape)
 
 
-
+""" 
 #####################
 ## Elimina outliers
 df_VC = df_VC_tmp # Creamos una copia de la base
@@ -68,8 +75,8 @@ def bye_outliers(var):
     print('Nuevas dimensiones del dataframe: ', df_VC.shape)
 
 # Quitamos valores atipicos de Total
-""" df_VC = bye_outliers('Total')
-print('Dataset sin datos atipicos: ',df_VC.shape) """
+# df_VC = bye_outliers('Total')
+# print('Dataset sin datos atipicos: ',df_VC.shape) 
 
 
 #################
@@ -92,7 +99,7 @@ def deal_duplicates_ventaCruzada(df, unify = True):
             ## siempre y cuando asi se determine segun el archivo 'Descrip.csv'  
             # cuando los id tienen mas de 1 descripcion 
             dup = par.groupby('IdProducto').count()[['Producto']] 
-            # si no reseta el index, IdProducto pasa a ser el nombre de las filas y se elimina el campo
+            # si no resetea el index, IdProducto pasa a ser el nombre de las filas y se elimina el campo
             dup = dup.reset_index() 
             # tomamos los valores con mas de 1 descripcion
             dup = dup[dup['Producto'] > 1]
@@ -174,7 +181,8 @@ df_VC = deal_duplicates_ventaCruzada(df_VC, unify=True)
 ### MODELADO
 # Creamos una funcion que retorna una matriz en formato ONE-HOT (oh), o 
 # un campo por cada categoria de uno o varios campos
-def matriz(df, id = True): # True si se utilizaran los ids de producto y no las descripciones
+def matriz(df, id = True): 
+    # True si se utilizaran los ids de producto y no las descripciones
     if id == True:                                                                             # salto de linea, sin espacios adelante para que funcione
         return df.groupby(['Key','IdProducto'])['Cantidad'].sum().unstack().fillna(0). \
         applymap(lambda x: 1 if x > 0 else 0) # devolvera escalar por cada variable
@@ -213,10 +221,8 @@ print(rules.columns)
 
 
 print('rules shape: ', rules.shape)
-print(rules.head())
+print(rules.head()) 
 
 
 
-rules.to_csv(outpath + 'Recomendaciones.csv')
-
-
+rules.to_csv(outpath + 'Recomendaciones.csv') """
