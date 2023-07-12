@@ -19,7 +19,7 @@ df_VC_tmp = pd.read_csv(inpath + 'Base_VentaCruzada_CSV.csv', delimiter=';', dec
                         dtype={'%Cliente': int, 'Fecha': 'string',
                                'Producto': 'string'}
                         )
-# df_VC_tmp = df_VC_tmp['Total_Facturada'].astype(str).astype(float)
+# Campo 'Total' sirve para eliminar outliers por el monto
 df_VC_tmp.columns = ['Key', 'IdCliente', 'IdProducto',
                      'Producto', 'Fecha', 'Cantidad', 'Total']
 df_VC_tmp["Key"] = pd.to_datetime(
