@@ -42,10 +42,10 @@ print('Dimensiones:')
 print(df_VC_tmp.shape)
 
 
-""" 
 #####################
-## Elimina outliers
-df_VC = df_VC_tmp # Creamos una copia de la base
+# Elimina outliers
+df_VC = df_VC_tmp  # Creamos una copia de la base
+
 
 def bye_outliers(var):
     # calculo de cuartiles
@@ -62,23 +62,24 @@ def bye_outliers(var):
     LI = Q1 - 1.5 * IQR
 
     # Atributo
-    print('Variable: ' +  str(var))
+    print('Variable: ' + str(var))
 
     # Limite Superior
-    print('Limite inferior: ' +  str(LI))
+    print('Limite inferior: ' + str(LI))
 
     # Limite inferior
-    print('Limite superior: ' +  str(LS))
+    print('Limite superior: ' + str(LS))
 
     # Filtra el dataframe
-    return(df_VC[(df_VC[var] < LS) & (df_VC[var] > LI)])
+    return (df_VC[(df_VC[var] < LS) & (df_VC[var] > LI)])
     print('Nuevas dimensiones del dataframe: ', df_VC.shape)
 
 # Quitamos valores atipicos de Total
 # df_VC = bye_outliers('Total')
-# print('Dataset sin datos atipicos: ',df_VC.shape) 
+# print('Dataset sin datos atipicos: ',df_VC.shape)
 
 
+""" 
 #################
 ## Quitar Duplicados
 # Validamos duplicados
