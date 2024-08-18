@@ -94,3 +94,31 @@ SELECT
 FROM PorcentajeVentas pv
 JOIN PorcentajeCategoria pc ON pv.CategoriaID = pc.Categoria
 ORDER BY pv.CategoriaID, pv.Porcentaje DESC;
+
+--Analiza el rendimiento de consultas complejas e identifica oportunidades para mejorar el rendimiento utilizando índices.
+CREATE NONCLUSTERED INDEX IX_Person_LastName_IncluyeNombres
+ON Person.Person (LastName)
+INCLUDE (FirstName, MiddleName);
+--Asi se utilizaria el indice, poniendo los campos que estan en el indice apra mejorar el rendimiento.
+SELECT FirstName, MiddleName, LastName
+FROM Person.Person
+WHERE LastName = 'Smith';
+
+--Crea un procedimiento almacenado que calcule el gasto total de un cliente dado.
+
+CREATE PROCEDURE GastoTotal_cliente
+AS
+BEGIN
+SELECT sc.CustomerID AS ClienteID,
+p.FirstName AS Nombre,
+p.LastName AS Apellido,
+SUM(sod.UnitPrice*sod.OrderQty) AS TotalVentas
+FROM Sales.Customer sc 
+LEFT JOIN Sales.SalesOrderHeader soh ON sc.CustomerID = soh.CustomerID
+LEFT JOIN Sales.SalesOrderDetail sod ON soh.SalesOrderID = sod.SalesOrderID
+JOIN Person.Person p ON sc.PersonID = p.BusinessEntityID
+GROUP BY sc.CustomerID, p.FirstName, p.LastName
+END
+
+EXEC GastoTotal_cliente
+
