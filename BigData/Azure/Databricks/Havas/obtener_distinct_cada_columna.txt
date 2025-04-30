@@ -1,0 +1,30 @@
+1. Abre Power Query:
+Ve a Datos → Desde una tabla/rango.
+
+2. Abre el Editor Avanzado:
+En Vista → Editor avanzado.
+
+3. Pega el siguiente código M:
+let
+    Source = Excel.CurrentWorkbook(){[Name="Tabla1"]}[Content],  // Ajusta "Tabla1" al nombre de tu tabla
+
+    // Convertir cada columna en lista, aplicar Distinct y ordenar
+    RemoveDuplicatesAndSort = Table.FromColumns(
+        List.Transform(
+            Table.ToColumns(Source), 
+            each List.Sort(List.Distinct(_))
+        ), 
+        Table.ColumnNames(Source)
+    )
+in
+    RemoveDuplicatesAndSort
+
+4. Cierra y carga los datos de vuelta a Excel.
+
+5. Para quitar formato tabla:
+    5.1 Selecciona cualquier celda de la tabla.
+
+    5.2 Esto activará las herramientas de tabla.
+    Ve a la pestaña "Tabla". Esta pestaña aparece automáticamente cuando seleccionas una tabla (puede llamarse "Diseño de tabla" o "Tabla" dependiendo de tu versión de Excel).
+    
+    5.3 Haz clic en "Convertir en rango". Te pedirá confirmación. Haz clic en Sí.
